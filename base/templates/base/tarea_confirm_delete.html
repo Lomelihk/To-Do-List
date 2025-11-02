@@ -1,0 +1,9 @@
+<a href="{% url 'lista_pendientes' %}">Volver a la Lista</a>
+
+<form method="POST" action="">
+
+    {% csrf_token %}
+    <p>¿Estás seguro de querer eliminar esta tarea?</p>
+    <input type="submit" value="Eliminar">
+    <a href="{% url 'lista_pendientes' %}">Cancelar</a>
+</form>

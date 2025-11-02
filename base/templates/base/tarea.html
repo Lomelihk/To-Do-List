@@ -1,1 +1,19 @@
-<h1>Tarea: {{tarea}}</h1>
+<h1>Detalle de Tarea</h1>
+<a href="{% url 'lista_pendientes' %}">Volver a la Lista</a>
+
+<h2>{{ tarea.titulo }}</h2>
+
+<p><strong>Descripción:</strong> {{ tarea.descripcion|default:"Sin descripción" }}</p>
+<p><strong>Estado:</strong> 
+    {% if tarea.completo %}
+        Completada
+    {% else %}
+        Pendiente
+    {% endif %}
+</p>
+<p><strong>Fecha de creación:</strong> {{ tarea.creado|date:"d/m/Y H:i" }}</p>
+<p><strong>Usuario:</strong> {{ tarea.usuario|default:"Sin asignar" }}</p>
+
+<div>
+    <a href="{% url 'editar_tarea' tarea.id %}">Editar Tarea</a>
+</div>

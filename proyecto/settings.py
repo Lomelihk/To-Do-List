@@ -12,32 +12,32 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Define el directorio base del proyecto.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
+# Clave secreta para la seguridad criptográfica de Django. ¡No compartir en producción!
 SECRET_KEY = 'django-insecure-**053x^ma+*(q0&ia&s^%hgw#c603@^^udr!j4_8r=0ud^p)8r'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# El modo DEBUG muestra errores detallados. Debe ser False en un entorno de producción.
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
 
-# Application definition
-
+# --- Definición de Aplicaciones ---
+# Aquí se listan todas las aplicaciones que componen el proyecto Django.
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'base.apps.BaseConfig',
+    # Aplicaciones por defecto de Django:
+    'django.contrib.admin',      # El panel de administración.
+    'django.contrib.auth',       # El framework de autenticación.
+    'django.contrib.contenttypes', # Framework para tipos de contenido.
+    'django.contrib.sessions',     # El framework de sesiones.
+    'django.contrib.messages',     # El framework de mensajería.
+    'django.contrib.staticfiles',  # Framework para gestionar archivos estáticos (CSS, JS, imágenes).
+
+    # Aplicaciones del proyecto:
+    'base.apps.BaseConfig',  # Se registra la aplicación 'base' que hemos creado.
 ]
 
 MIDDLEWARE = [
@@ -50,13 +50,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Define el archivo principal de configuración de URLs para el proyecto.
 ROOT_URLCONF = 'proyecto.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
-        'APP_DIRS': True,
+        'APP_DIRS': True,  # Hace que Django busque plantillas dentro de los directorios 'templates' de cada aplicación.
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
@@ -70,20 +71,19 @@ TEMPLATES = [
 WSGI_APPLICATION = 'proyecto.wsgi.application'
 
 
-# Database
+# --- Configuración de la Base de Datos ---
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
 DATABASES = {
+    # Por defecto, se usa SQLite, que es una base de datos ligera basada en un solo archivo.
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',  # El archivo de la base de datos se creará en el directorio raíz del proyecto.
     }
 }
 
 
-# Password validation
+# Validadores de contraseñas.
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -100,9 +100,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
+# --- Internacionalización ---
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -112,12 +111,10 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
+# --- Archivos Estáticos (CSS, JavaScript, Imágenes) ---
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
-
 STATIC_URL = 'static/'
 
-# Default primary key field type
+# Tipo de campo de clave primaria por defecto.
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
