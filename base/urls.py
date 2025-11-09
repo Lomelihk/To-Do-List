@@ -1,7 +1,8 @@
 # --- Importaciones Necesarias ---
 from django.urls import path  # Función para definir rutas de URL.
 # Importa todas las vistas que creamos en el archivo views.py para poder asignarlas a una URL.
-from .views import ListaPendientes, DetalleTarea, CrearTarea, EditarTarea, EliminarTarea
+from .views import ListaPendientes, DetalleTarea, CrearTarea, EditarTarea, EliminarTarea, LogeonUsuario
+from django.contrib.auth.views import LogoutView
 
 # --- Definición de Patrones de URL ---
 # La variable 'urlpatterns' es una lista que Django busca para encontrar las rutas de la aplicación.
@@ -27,4 +28,7 @@ urlpatterns = [
 
     # Ruta para eliminar una tarea existente. También requiere la 'pk'.
     path('eliminar-tarea/<int:pk>/', EliminarTarea.as_view(), name='eliminar_tarea'),
+
+    path('login/', LogeonUsuario.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
 ]
