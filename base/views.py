@@ -1,18 +1,15 @@
-# --- Importaciones Necesarias ---
-from django.shortcuts import render, redirect  # Función para renderizar plantillas HTML con datos de contexto.
-from django.views.generic.list import ListView  # Vista genérica para mostrar una lista de objetos de un modelo.
-from django.views.generic.detail import DetailView  # Vista genérica para mostrar el detalle de un objeto específico.
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login  # Vistas para formularios de creación, edición y eliminación.
-from django.contrib.auth.views import LoginView  # Vistas para manejar el inicio y cierre de sesión de usuarios.
-from django.contrib.auth.mixins import LoginRequiredMixin  # Mixin para restringir el acceso a usuarios autenticados.
-from django.urls import reverse_lazy  # Utilidad para obtener una URL a partir de su nombre, de forma diferida (lazy).
-from .models import Tarea  # Importa el modelo 'Tarea' que definimos en models.py.
-
-
-# --- Vistas Basadas en Clases (Class-Based Views) ---
-# Django ofrece vistas genéricas que simplifican las tareas comunes (listar, detallar, crear, etc.).
+from django.contrib.auth import login
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from .models import Tarea
 
 class ListaPendientes(LoginRequiredMixin, ListView):
     """
@@ -117,3 +114,16 @@ class RegistrarUsuario(FormView):
         if self.request.user.is_authenticated:
             return redirect('lista_pendientes')
         return super().get(*args, **kwargs)
+
+
+@require_POST
+def toggle_complete(request, pk):
+    """Alterna el estado de completitud de una tarea sin recargar la página.
+    
+    Solo el propietario de la tarea puede cambiar su estado.
+    Retorna JSON con el nuevo estado.
+    """
+    tarea = get_object_or_404(Tarea, pk=pk, usuario=request.user)
+    tarea.completo = not tarea.completo
+    tarea.save()
+    return JsonResponse({'completo': tarea.completo})

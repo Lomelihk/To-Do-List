@@ -12,30 +12,66 @@
 <h1>tareas pendientes</h1>
 <a href="{% url 'crear_tarea' %}">Crear Tarea</a>
 <form method="GET">
-    <input type="text" name = 'area_buscar' value="{{valor_buscar}}">
+    <input type="text" name='area_buscar' value="{{valor_buscar}}">
     <input type="submit" value="Buscar">
 </form>
 
+{% csrf_token %}
+
 <table>
     <tr>
+        <th>Completado</th>
         <th>Elemento</th>
         <th></th>
         <th></th>
+        <th></th>
     </tr>
-        {% for tarea in tareas %}
-    <tr>
-        <td>{{tarea.titulo}}</td>
+    {% for tarea in tareas %}
+    <tr id="tarea-{{ tarea.id }}" {% if tarea.completo %}style="opacity: 0.5; text-decoration: line-through;"{% endif %}>
+        <td>
+            <input type="checkbox" 
+                   {% if tarea.completo %}checked{% endif %}
+                   onchange="toggleComplete({{ tarea.id }}, this)">
+        </td>
+        <td class="titulo-tarea">{{ tarea.titulo }}</td>
         <td><a href="{% url 'detalle_tarea' tarea.id %}">Ver</a></td>
         <td><a href="{% url 'editar_tarea' tarea.id %}">Editar</a></td>
         <td><a href="{% url 'eliminar_tarea' tarea.id %}">Eliminar</a></td>
-    </tr> 
-
-
-
-        {% empty %}
-        <h3>No hay tareas pendientes</h3>
-        
-        {%endfor%}
-
-    
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="5">
+            <h3>No hay tareas pendientes</h3>
+        </td>
+    </tr>
+    {% endfor %}
 </table>
+
+<script>
+function toggleComplete(tareaId, checkbox) {
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+    fetch(`/toggle-complete/${tareaId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        const row = document.getElementById(`tarea-${tareaId}`);
+        if (data.completo) {
+            row.style.opacity = '0.5';
+            row.style.textDecoration = 'line-through';
+        } else {
+            row.style.opacity = '1';
+            row.style.textDecoration = 'none';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        checkbox.checked = !checkbox.checked;
+    });
+}
+</script>

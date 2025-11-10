@@ -12,6 +12,7 @@ urlpatterns = [
     path('crear-tarea/', CrearTarea.as_view(), name='crear_tarea'),
     path('editar-tarea/<int:pk>/', EditarTarea.as_view(), name='editar_tarea'),
     path('eliminar-tarea/<int:pk>/', EliminarTarea.as_view(), name='eliminar_tarea'),
+    path('toggle-complete/<int:pk>/', toggle_complete, name='toggle_complete'),
     
     # Autenticación
     path('login/', LogeonUsuario.as_view(), name='login'),
