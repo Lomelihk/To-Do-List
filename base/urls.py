@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     ListaPendientes, DetalleTarea, CrearTarea, EditarTarea,
-    EliminarTarea, LogeonUsuario, RegistrarUsuario
+    EliminarTarea, LogeonUsuario, RegistrarUsuario, toggle_complete
 )
 from django.contrib.auth.views import LogoutView
 
