@@ -11,6 +11,10 @@
 
 <h1>tareas pendientes</h1>
 <a href="{% url 'crear_tarea' %}">Crear Tarea</a>
+<form method="GET">
+    <input type="text" name = 'area_buscar' value="{{valor_buscar}}">
+    <input type="submit" value="Buscar">
+</form>
 
 <table>
     <tr>

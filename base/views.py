@@ -1,8 +1,10 @@
 # --- Importaciones Necesarias ---
-from django.shortcuts import render  # Función para renderizar plantillas HTML con datos de contexto.
+from django.shortcuts import render, redirect  # Función para renderizar plantillas HTML con datos de contexto.
 from django.views.generic.list import ListView  # Vista genérica para mostrar una lista de objetos de un modelo.
 from django.views.generic.detail import DetailView  # Vista genérica para mostrar el detalle de un objeto específico.
-from django.views.generic.edit import CreateView, UpdateView, DeleteView  # Vistas para formularios de creación, edición y eliminación.
+from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login  # Vistas para formularios de creación, edición y eliminación.
 from django.contrib.auth.views import LoginView  # Vistas para manejar el inicio y cierre de sesión de usuarios.
 from django.contrib.auth.mixins import LoginRequiredMixin  # Mixin para restringir el acceso a usuarios autenticados.
 from django.urls import reverse_lazy  # Utilidad para obtener una URL a partir de su nombre, de forma diferida (lazy).
@@ -21,6 +23,18 @@ class ListaPendientes(LoginRequiredMixin, ListView):
     context_object_name = 'tareas'  # 2. Define el nombre de la variable que contendrá la lista de tareas en la plantilla HTML.
                                     # Por defecto, sería 'object_list'. Con esto, la llamamos 'tareas'.
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)  # Llama al método padre para obtener el contexto base.
+        context['tareas'] = context['tareas'].filter(usuario=self.request.user)  # Filtra las tareas para que solo se muestren las del usuario actual.
+        context['contador_tareas'] = context['tareas'].filter(completo=False).count()  # Cuenta las tareas no completadas.
+
+        valor_buscar = self.request.GET.get('area_buscar') or ''
+        if valor_buscar:
+            context['tareas'] = context['tareas'].filter(
+                titulo__icontains=valor_buscar
+            )
+        context['valor_buscar'] = valor_buscar
+        return context # Devuelve el contexto modificado (si es necesario).
 
 class DetalleTarea(LoginRequiredMixin, DetailView):
     """
@@ -38,9 +52,13 @@ class CrearTarea(LoginRequiredMixin, CreateView):
     Hereda de CreateView, que renderiza un formulario basado en el modelo y procesa los datos enviados.
     """
     model = Tarea  # 1. Especifica que el modelo a utilizar para crear un objeto es 'Tarea'.
-    fields = '__all__'  # 2. Indica que todos los campos del modelo 'Tarea' deben ser incluidos en el formulario.
+    fields = ['titulo', 'descripcion', 'completo']  # 2. Indica que todos los campos del modelo 'Tarea' deben ser incluidos en el formulario.
     success_url = reverse_lazy('lista_pendientes')  # 3. Define a qué URL redirigir al usuario después de que la tarea se haya creado con éxito.
-                              # 'reverse_lazy' busca la URL con el nombre 'lista_pendientes'.
+    # 'reverse_lazy' busca la URL con el nombre 'lista_pendientes'.
+    
+    def form_valid(self, form):
+        form.instance.usuario = self.request.user  # Asigna el usuario actual a la tarea.
+        return super().form_valid(form)
 
 class EditarTarea(LoginRequiredMixin, UpdateView):
     """
@@ -48,7 +66,7 @@ class EditarTarea(LoginRequiredMixin, UpdateView):
     Hereda de UpdateView, que funciona de manera similar a CreateView pero para actualizar un objeto existente.
     """
     model = Tarea  # 1. Especifica el modelo a utilizar.
-    fields = '__all__'  # 2. Indica que todos los campos se pueden editar en el formulario.
+    fields = ['titulo', 'descripcion', 'completo']   # 2. Indica que todos los campos se pueden editar en el formulario.
     success_url = reverse_lazy('lista_pendientes')  # 3. Redirige a la lista de pendientes después de una edición exitosa.
 
 class EliminarTarea(LoginRequiredMixin, DeleteView):
@@ -75,3 +93,27 @@ class LogeonUsuario(LoginView):
         Define la URL a la que se redirige al usuario después de un inicio de sesión exitoso.
         """ 
         return reverse_lazy('lista_pendientes')  # Redirige a la lista de pendientes.
+    
+class RegistrarUsuario(FormView):
+    """Registra nuevos usuarios en la aplicación.
+    
+    Valida los datos de registro y crea una nueva cuenta,
+    iniciando automáticamente sesión si el registro es exitoso.
+    """
+    template_name = 'base/register.html'
+    form_class = UserCreationForm
+    redirect_authenticated_user = True
+    success_url = reverse_lazy('lista_pendientes')
+
+    def form_valid(self, form):
+        """Guarda el nuevo usuario e inicia sesión automáticamente."""
+        usuario = form.save()
+        if usuario is not None:
+            login(self.request, usuario)
+        return super().form_valid(form)
+    
+    def get(self, *args, **kwargs):
+        """Redirige usuarios autenticados a la lista de tareas."""
+        if self.request.user.is_authenticated:
+            return redirect('lista_pendientes')
+        return super().get(*args, **kwargs)

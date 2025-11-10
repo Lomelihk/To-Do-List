@@ -6,7 +6,7 @@ Este documento detalla los pasos seguidos para desarrollar esta aplicación de l
 
 El primer paso fue crear la estructura básica del proyecto y de la aplicación principal.
 
-1.  **Crear el Proyecto Django:** Se utilizó el comando `django-admin` para generar el esqueleto del proyecto. El `.` al final indica que se cree en el directorio actual.
+1.  **Crear el Proyecto Django:** Se utilizó el comando `django-admin` para generar el esqueleto del proyecto.
     ```bash
     django-admin startproject proyecto .
     ```
@@ -56,7 +56,7 @@ class Tarea(models.Model):
 
 ## 3. Migraciones de la Base de Datos
 
-Una vez definido el modelo, se crearon y aplicaron las migraciones para que Django construyera la tabla correspondiente en la base de datos (SQLite por defecto).
+Una vez definido el modelo, se crearon y aplicaron las migraciones para que Django construyera la tabla correspondiente en la base de datos.
 
 1.  **Crear el archivo de migración:**
     ```bash
@@ -69,11 +69,11 @@ Una vez definido el modelo, se crearon y aplicaron las migraciones para que Djan
 
 ## 4. Creación de las Vistas (Lógica)
 
-Se utilizaron las "Class-Based Views" (Vistas Basadas en Clases) de Django para manejar la lógica de la aplicación de una manera organizada y reutilizable en `base/views.py`.
+Se utilizaron las "Class-Based Views" (Vistas Basadas en Clases) de Django para manejar la lógica de la aplicación en `base/views.py`.
 
--   `ListaPendientes (ListView)`: Muestra la lista de todas las tareas.
+-   `ListaPendientes (ListView)`: Muestra la lista de tareas.
 -   `DetalleTarea (DetailView)`: Muestra los detalles de una única tarea.
--   `CrearTarea (CreateView)`: Muestra un formulario para crear una nueva tarea y la guarda.
+-   `CrearTarea (CreateView)`: Muestra un formulario para crear una nueva tarea.
 -   `EditarTarea (UpdateView)`: Muestra un formulario para editar una tarea existente.
 -   `EliminarTarea (DeleteView)`: Muestra una página de confirmación para eliminar una tarea.
 
@@ -81,45 +81,37 @@ Se utilizaron las "Class-Based Views" (Vistas Basadas en Clases) de Django para 
 
 Se definieron las rutas para que cada URL se corresponda con una vista.
 
-1.  **URLs del Proyecto:** En `proyecto/urls.py`, se incluyeron las URLs de la aplicación `base` en la ruta principal del sitio.
+1.  **URLs del Proyecto:** En `proyecto/urls.py`, se incluyeron las URLs de la aplicación `base`.
     ```python
     # proyecto/urls.py
-    from django.contrib import admin
-    from django.urls import path, include
-
     urlpatterns = [
         path('admin/', admin.site.urls),
-        path('', include('base.urls')), # Incluye las URLs de la app 'base'
+        path('', include('base.urls')),
     ]
     ```
 
 2.  **URLs de la Aplicación:** En `base/urls.py`, se definió una ruta para cada vista.
     ```python
     # base/urls.py
-    from django.urls import path
-    from .views import ListaPendientes, DetalleTarea, CrearTarea, EditarTarea, EliminarTarea
-
     urlpatterns = [
         path('', ListaPendientes.as_view(), name='lista_pendientes'),
-        path('tarea/<int:pk>/', DetalleTarea.as_view(), name='detalle_tarea'),
-        path('crear-tarea/', CrearTarea.as_view(), name='crear_tarea'),
-        path('editar-tarea/<int:pk>/', EditarTarea.as_view(), name='editar_tarea'),
-        path('eliminar-tarea/<int:pk>/', EliminarTarea.as_view(), name='eliminar_tarea'),
+        # ... otras rutas
     ]
     ```
 
 ## 6. Creación de Plantillas (Templates)
 
-Se crearon archivos HTML en `base/templates/base/` para renderizar la interfaz de usuario. Django, por convención, busca las plantillas de las vistas genéricas con nombres específicos.
+Se crearon archivos HTML en `base/templates/base/` para renderizar la interfaz de usuario.
 
--   `tarea_list.html`: Muestra la lista de tareas (usada por `ListaPendientes`).
--   `tarea.html`: Muestra el detalle de una tarea (usada por `DetalleTarea`).
--   `tarea_form.html`: Muestra el formulario para crear o editar una tarea (usada por `CrearTarea` y `EditarTarea`).
--   `tarea_confirm_delete.html`: Muestra el mensaje de confirmación para eliminar una tarea (usada por `EliminarTarea`).
+-   `tarea_list.html`: Para la lista de tareas.
+-   `tarea.html`: Para el detalle de una tarea.
+-   `tarea_form.html`: Para crear o editar una tarea.
+-   `tarea_confirm_delete.html`: Para confirmar la eliminación.
+-   `login.html`: Para el formulario de inicio de sesión.
 
 ## 7. Registro en el Panel de Administración
 
-Para poder gestionar las tareas fácilmente desde el panel de administrador de Django, se registró el modelo `Tarea` en el archivo `base/admin.py`.
+Se registró el modelo `Tarea` en `base/admin.py` para poder gestionarlo desde el panel de administrador.
 
 ```python
 # base/admin.py
@@ -129,11 +121,34 @@ from .models import Tarea
 admin.site.register(Tarea)
 ```
 
-## 8. Dependencias del Proyecto
+## 8. Implementación de Autenticación
 
-Las librerías de Python necesarias para este proyecto se listan en `requirements.txt`. La principal dependencia es Django.
+Se añadió la funcionalidad de inicio y cierre de sesión.
 
--   `asgiref`
--   `Django`
--   `sqlparse`
--   `tzdata`
+1.  **Crear Vistas de Login/Logout:** Se utilizaron las vistas integradas de Django `LoginView` y `LogoutView`.
+2.  **Configurar URLs de Autenticación:** Se añadieron las rutas para `login/` y `logout/` en `base/urls.py`.
+    ```python
+    # base/urls.py
+    from django.contrib.auth.views import LoginView, LogoutView
+
+    urlpatterns = [
+        # ...
+        path('login/', LoginView.as_view(template_name='base/login.html'), name='login'),
+        path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
+    ]
+    ```
+3.  **Corregir Redirección Post-Login:** Por defecto, Django redirige a `/accounts/profile/` tras un login exitoso. Para corregir el error 404, se especificó una URL de redirección en `proyecto/settings.py`.
+    ```python
+    # proyecto/settings.py
+    LOGIN_REDIRECT_URL = '/'
+    ```
+
+## 9. Dependencias del Proyecto
+
+Las librerías de Python necesarias para este proyecto se listan en `requirements.txt`.
+```
+asgiref==3.9.2
+Django==5.2.6
+sqlparse==0.5.3
+tzdata==2025.2
+```
