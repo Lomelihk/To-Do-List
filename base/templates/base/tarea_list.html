@@ -1,3 +1,6 @@
+{% extends 'base/principal.html' %}
+
+{% block content %}
 {% if request.user.is_authenticated %}
 
     <p>{{request.user}}</p>
@@ -29,12 +32,9 @@
     {% for tarea in tareas %}
     <tr id="tarea-{{ tarea.id }}" {% if tarea.completo %}style="opacity: 0.5; text-decoration: line-through;"{% endif %}>
         <td>
-            <input type="checkbox" 
-                   {% if tarea.completo %}checked{% endif %}
-                   onchange="toggleComplete({{ tarea.id }}, this)">
+            <input type="checkbox" {% if tarea.completo %}checked{% endif %}onchange="toggleComplete({{ tarea.id }}, this)">
         </td>
         <td class="titulo-tarea">{{ tarea.titulo }}</td>
-        <td><a href="{% url 'detalle_tarea' tarea.id %}">Ver</a></td>
         <td><a href="{% url 'editar_tarea' tarea.id %}">Editar</a></td>
         <td><a href="{% url 'eliminar_tarea' tarea.id %}">Eliminar</a></td>
     </tr>
@@ -75,3 +75,5 @@ function toggleComplete(tareaId, checkbox) {
     });
 }
 </script>
+{% endblock %}
+

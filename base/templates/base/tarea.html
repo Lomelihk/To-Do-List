@@ -1,3 +1,7 @@
+{% extends 'base/principal.html' %}
+
+{% block content %}
+
 <h1>Detalle de Tarea</h1>
 <a href="{% url 'lista_pendientes' %}">Volver a la Lista</a>
 
@@ -17,3 +21,4 @@
 <div>
     <a href="{% url 'editar_tarea' tarea.id %}">Editar Tarea</a>
 </div>
+{% endblock %}

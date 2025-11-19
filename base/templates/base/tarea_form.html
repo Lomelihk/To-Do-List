@@ -1,3 +1,7 @@
+{% extends 'base/principal.html' %}
+
+{% block content %}
+
 <h1>Formulario de Tarea</h1>
 <a href="{% url 'lista_pendientes' %}">Volver a la Lista</a>
 
@@ -6,3 +10,4 @@
     {{ form.as_p }}
     <input type="submit" value="Crear Tarea">
 </form>
+{% endblock %}

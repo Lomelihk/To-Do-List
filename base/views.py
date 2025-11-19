@@ -12,6 +12,7 @@ from django.views.decorators.http import require_POST
 from .models import Tarea
 
 class ListaPendientes(LoginRequiredMixin, ListView):
+    
     """
     Esta vista muestra la lista de todas las tareas pendientes.
     Hereda de ListView, que automáticamente consulta todos los objetos del modelo especificado.

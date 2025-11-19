@@ -1,3 +1,7 @@
+{% extends 'base/principal.html' %}
+
+{% block content %}
+
 <a href="{% url 'lista_pendientes' %}">Volver a la Lista</a>
 
 <form method="POST" action="">
@@ -7,3 +11,4 @@
     <input type="submit" value="Eliminar">
     <a href="{% url 'lista_pendientes' %}">Cancelar</a>
 </form>
+{% endblock %}
