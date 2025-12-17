@@ -1,0 +1,59 @@
+<!--
+Plantilla Base Principal (`principal.html`)
+---
+
+-->
+{% load static %} <!-- Carga las etiquetas de Django para gestionar archivos estáticos (CSS, JS, imágenes). -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Asegura un diseño responsive. -->
+    <title>To-Do List</title>
+    
+    <!-- Google Fonts: Carga la fuente 'Nunito' para un diseño moderno. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Hoja de Estilos Personalizada: Enlaza el archivo CSS principal de la aplicación. -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <button id="dark-mode-toggle">Toggle Dark Mode</button>
+    <!-- 
+    Contenedor Principal: Un wrapper que centra el contenido y le da un ancho máximo 
+    para mejorar la legibilidad.
+    -->
+    <div class="container">
+        <!--
+        Bloque de Contenido (`content`):
+        Este es el corazón del sistema de plantillas de Django. Las plantillas hijas
+        (como `tarea_list.html` o `login.html`) insertarán su contenido específico aquí.
+        -->
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script>
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const body = document.body;
+
+        // Check for saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            body.classList.add('dark-mode');
+        }
+
+        darkModeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+
+            // Save dark mode preference
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        });
+    </script>
+</body>
+</html>

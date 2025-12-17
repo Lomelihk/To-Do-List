@@ -1,0 +1,404 @@
+
+/* 
+:root
+---
+Define las variables CSS globales utilizadas en toda la aplicación para mantener la consistencia
+en el esquema de colores, bordes, sombras y transiciones.
+*/
+:root {
+    /* Paleta de colores principal */
+    --primary-color: #6C63FF; /* Color primario para elementos interactivos y destacados */
+    --secondary-color: #F50057; /* Color secundario para alertas, eliminaciones y otros énfasis */
+    
+    /* Colores de fondo y texto */
+    --background-color: #F4F6F8; /* Color de fondo general de la aplicación */
+    --card-bg: #FFFFFF; /* Color de fondo para las tarjetas */
+    --text-color: #2C3E50; /* Color de texto principal */
+    --text-light: #7F8C8D; /* Color de texto más claro para subtítulos o información secundaria */
+    
+    /* Propiedades de UI */
+    --border-radius: 12px; /* Radio de borde para elementos como tarjetas y botones */
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra de caja para dar profundidad a las tarjetas */
+    --transition: all 0.3s ease; /* Transición estándar para animaciones suaves */
+}
+
+/* 
+Estilos Base del Body
+---
+Establece los estilos fundamentales para el cuerpo del documento, incluyendo la fuente,
+el color de fondo y el layout principal usando Flexbox para asegurar que el pie de página
+se mantenga en la parte inferior.
+*/
+body {
+    background-color: var(--background-color);
+    font-family: 'Nunito', sans-serif;
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 
+Contenedor Principal
+---
+Define el contenedor principal que centra el contenido de la página y limita su ancho
+para una mejor legibilidad en pantallas grandes.
+*/
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* 
+Estilos de Tarjeta (.card)
+---
+Estilo base para los contenedores de contenido principales, como formularios o bloques de información.
+Usa variables para fondo, bordes y sombra.
+*/
+.card {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 30px;
+    margin-bottom: 20px;
+}
+
+/* 
+Barra de Cabecera (.header-bar)
+---
+Layout para la cabecera de las secciones, generalmente contiene el título y botones de acción.
+*/
+.header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+/* 
+Tipografía (h1, h2, h3, a)
+---
+Estilos base para los encabezados y enlaces, asegurando consistencia visual.
+*/
+h1, h2, h3 {
+    color: var(--text-color);
+    margin-top: 0;
+}
+
+h1 { font-size: 2.5rem; font-weight: 700; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+
+a {
+    text-decoration: none;
+    color: var(--primary-color);
+    transition: var(--transition);
+}
+
+a:hover {
+    color: #5a52d5;
+}
+
+/* 
+Componentes de Botón
+---
+Estilos para botones y elementos que se comportan como tal. Incluye variantes para
+botones principales, con contorno y de peligro.
+*/
+.button, button, input[type="submit"] {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: var(--transition);
+    display: inline-block;
+}
+
+.button:hover, button:hover, input[type="submit"]:hover {
+    background-color: #5a52d5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+}
+
+.button-outline {
+    background-color: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+.button-outline:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.button-danger {
+    background-color: var(--secondary-color);
+}
+
+.button-danger:hover {
+    background-color: #d4004b;
+    box-shadow: 0 4px 12px rgba(245, 0, 87, 0.3);
+}
+
+/* 
+Componentes de Formulario
+---
+Estilos para campos de entrada de texto, contraseñas, etc., con estados de foco.
+*/
+input[type="text"],
+input[type="password"],
+input[type="email"],
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    transition: var(--transition);
+    font-family: inherit;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+/* 
+Lista de Tareas (.task-wrapper)
+---
+Estilos para cada elemento de la lista de tareas. Incluye un estado "completado"
+y una pequeña animación al pasar el cursor.
+*/
+.task-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border-left: 5px solid var(--primary-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: var(--transition);
+}
+
+.task-wrapper:hover {
+    transform: translateX(5px);
+}
+
+.task-wrapper.completed {
+    border-left-color: #2ecc71; /* Verde para tareas completadas */
+    opacity: 0.7;
+}
+
+.task-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-grow: 1;
+}
+
+.task-title a {
+    color: var(--text-color);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.task-title .completed-text {
+    text-decoration: line-through;
+    color: var(--text-light);
+}
+
+.task-controls a {
+    color: var(--text-light);
+    margin-left: 15px;
+    font-size: 0.9rem;
+}
+
+.task-controls a.delete-link {
+    color: var(--secondary-color);
+}
+
+.task-controls a:hover {
+    text-decoration: underline;
+}
+
+/* 
+Páginas de Autenticación (.auth-card)
+---
+Estilos específicos para las tarjetas de inicio de sesión y registro, centrando el contenido.
+*/
+.auth-card {
+    max-width: 400px;
+    margin: 80px auto;
+    text-align: center;
+}
+
+.auth-footer {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+/* 
+Barra de Búsqueda (.search-form)
+---
+Estilos para el formulario de búsqueda de tareas.
+*/
+.search-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.search-form input[type="text"] {
+    margin-bottom: 0;
+}
+
+/* 
+Estilo de Checkbox
+---
+Ajusta el tamaño del checkbox para una mejor interacción.
+*/
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+/* --- Estilos Externalizados de Templates --- */
+
+/* --- Tarea_list.html --- */
+.header-bar h3 {
+    margin: 0;
+    color: var(--text-light);
+}
+
+.header-bar form {
+    /* Usado para el formulario de logout para que se alinee con el texto */
+    display: inline;
+}
+
+.search-add-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-add-wrapper .search-form {
+    flex-grow: 1; /* Permite que el formulario de búsqueda ocupe el espacio disponible */
+    margin-right: 20px;
+    margin-bottom: 0; /* Sobrescribe el margen genérico de .search-form */
+}
+
+.search-add-wrapper .add-link {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 45px;
+    box-sizing: border-box;
+}
+
+.task-items-wrapper .empty-list-message {
+    text-align: center;
+    padding: 50px;
+    color: var(--text-light);
+}
+
+/* --- Tarea_form.html --- */
+.header-bar > a {
+    /* Estilo para el enlace de "Volver" en la cabecera */
+    color: var(--text-light);
+}
+
+.form-actions {
+    /* Contenedor para los botones de acción en formularios */
+    margin-top: 20px;
+}
+
+.form-actions .button-outline {
+    margin-left: 10px;
+}
+
+/* --- Login.html & Register.html --- */
+.auth-card .header-bar {
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.auth-card form input[type="submit"] {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* 
+Estilos para el botón de modo oscuro
+---
+Un botón de posición fija para alternar el modo oscuro.
+*/
+#dark-mode-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    border: 2px solid var(--text-color);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+}
+
+/* 
+Modo Oscuro
+---
+Anula las variables de color globales cuando la clase .dark-mode se aplica al body.
+*/
+body.dark-mode {
+    --background-color: #121212;
+    --card-bg: #1E1E1E;
+    --text-color: #E0E0E0;
+    --text-light: #A0A0A0;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Ajustes adicionales para el modo oscuro */
+body.dark-mode .task-wrapper {
+    background-color: #2a2a2a;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+body.dark-mode input[type="text"],
+body.dark-mode input[type="password"],
+body.dark-mode input[type="email"],
+body.dark-mode textarea {
+    background-color: #333;
+    border-color: #555;
+    color: var(--text-color);
+}
+
+body.dark-mode input[type="text"]:focus,
+body.dark-mode input[type="password"]:focus,
+body.dark-mode input[type="email"]:focus,
+body.dark-mode textarea:focus {
+    border-color: var(--primary-color);
+}

@@ -1,0 +1,42 @@
+<!--
+Plantilla de Inicio de Sesión (`login.html`)
+---
+Descripción: Proporciona el formulario para que los usuarios inicien sesión en la aplicación.
+-->
+{% extends 'base/principal.html' %} <!-- Hereda de la plantilla base. -->
+
+{% block content %}
+
+<!-- 
+Tarjeta de Autenticación: Contenedor principal para el formulario de login, 
+con un estilo específico definido en `auth-card`.
+-->
+<div class="card auth-card">
+    <div class="header-bar">
+        <h1>Iniciar Sesión</h1>
+    </div>
+
+    <!-- 
+    Formulario de Login:
+    - method="POST": Envía los datos de forma segura.
+    - action="": El formulario se envía a la misma URL en la que se encuentra.
+    -->
+    <form method="POST" action="">
+        {% csrf_token %} <!-- Token de seguridad contra ataques CSRF. Esencial para formularios POST en Django. -->
+        
+        <!-- 
+        {{ form.as_p }}: Renderiza el formulario de Django (`form` pasado desde la vista) 
+        como una serie de párrafos (<p>), donde cada párrafo contiene una etiqueta y un campo.
+        -->
+        {{ form.as_p }}
+        
+        <input type="submit" value="Entrar">
+    </form>
+
+    <!-- Pie de la tarjeta: Ofrece un enlace para que los nuevos usuarios se registren. -->
+    <div class="auth-footer">
+        <p>¿No tienes cuenta? <a href="{% url 'register' %}">Regístrate aquí</a></p>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,38 @@
+<!--
+Plantilla de Registro de Usuario (`register.html`)
+---
+Descripción: Muestra un formulario para que nuevos usuarios puedan registrarse en la aplicación.
+-->
+{% extends 'base/principal.html' %} <!-- Hereda de la plantilla base. -->
+
+{% block content %}
+
+<!-- 
+Tarjeta de Autenticación: Contenedor principal para el formulario de registro, 
+con el mismo estilo que la tarjeta de login para consistencia.
+-->
+<div class="card auth-card">
+    <div class="header-bar">
+        <h1>Registro</h1>
+    </div>
+
+    <!-- Formulario de Registro -->
+    <form method="POST" action="">
+        {% csrf_token %} <!-- Token de seguridad CSRF. -->
+        
+        <!-- 
+        {{ form.as_p }}: Renderiza el formulario de registro de Django (`form` pasado desde la vista)
+        como una serie de párrafos.
+        -->
+        {{ form.as_p }}
+        
+        <input type="submit" value="Registrarse">
+    </form>
+
+    <!-- Pie de la tarjeta: Ofrece un enlace para que los usuarios existentes inicien sesión. -->
+    <div class="auth-footer">
+        <p>¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia sesión</a></p>
+    </div>
+</div>
+
+{% endblock %}

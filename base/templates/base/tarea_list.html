@@ -1,0 +1,137 @@
+<!--
+Plantilla de Lista de Tareas (`tarea_list.html`)
+---
+Descripción: Muestra la lista principal de tareas del usuario autenticado. Permite ver,
+buscar, y crear nuevas tareas. También maneja la marcación de tareas como completadas
+de forma asíncrona.
+-->
+{% extends 'base/principal.html' %} <!-- Hereda de la plantilla base. -->
+
+{% block content %}
+
+<!-- Cabecera: Saluda al usuario y muestra el contador de tareas pendientes. -->
+<div class="header-bar">
+    <div>
+        <h1>Hola, {{request.user|title}}</h1>
+        <h3>Tienes <i>{{count}}</i> tarea{{ count|pluralize:"s" }} incompleta{{ count|pluralize:"s" }}</h3>
+    </div>
+    {% if request.user.is_authenticated %}
+        <!-- Botón de Salir si el usuario está autenticado. -->
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="button button-outline">Salir</button>
+        </form>
+    {% else %}
+        <a href="{% url 'login' %}">Entrar</a>
+    {% endif %}
+</div>
+
+<!-- Sección de Búsqueda y Creación -->
+<div class="search-add-wrapper">
+    <!-- Formulario de búsqueda (GET) para filtrar tareas. -->
+    <form method="GET" class="search-form">
+        <input type="text" name='area_buscar' value="{{valor_buscar}}" placeholder="Buscar tareas...">
+        <input type="submit" value="Buscar" class="button">
+    </form>
+    <!-- Enlace para crear una nueva tarea. -->
+    <a href="{% url 'crear_tarea' %}" class="button add-link">+ Nueva</a>
+</div>
+
+<!-- Contenedor de la lista de tareas. -->
+<div class="task-items-wrapper">
+    <!-- 
+    Bucle para iterar sobre las tareas.
+    'tareas' es el queryset pasado desde la vista ListaPendientes.
+    -->
+    {% for tarea in tareas %}
+    <div class="task-wrapper {% if tarea.completo %}completed{% endif %}" id="tarea-{{ tarea.id }}">
+        <div class="task-title">
+            <!-- Checkbox para marcar la tarea como completada/incompleta. -->
+            <input type="checkbox" class="task-checkbox" data-id="{{ tarea.id }}" {% if tarea.completo %}checked{% endif %}>
+            <!-- 
+            Enlace para editar la tarea. 
+            Aplica una clase especial si la tarea está completada para tachar el texto.
+            -->
+            {% if tarea.completo %}
+            <a href="{% url 'editar_tarea' tarea.id %}" class="completed-text">{{ tarea.titulo }}</a>
+            {% else %}
+            <a href="{% url 'editar_tarea' tarea.id %}">{{ tarea.titulo }}</a>
+            {% endif %}
+        </div>
+        <!-- Controles de la tarea (ej. eliminar). -->
+        <div class="task-controls">
+            <a href="{% url 'eliminar_tarea' tarea.id %}" class="delete-link">&#10005;</a>
+        </div>
+    </div>
+    {% empty %}
+        <!-- Mensaje que se muestra si no hay tareas en la lista. -->
+        <div class="empty-list-message">
+            <h3>No hay tareas en tu lista</h3>
+            <p>¡Crea una nueva tarea para empezar!</p>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- 
+JavaScript para la funcionalidad Asíncrona
+---
+Maneja el cambio de estado de las tareas (completado/incompleto) sin recargar la página
+utilizando la API Fetch.
+-->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkboxes = document.querySelectorAll('.task-checkbox');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                // Al cambiar el estado del checkbox, llama a la función toggleComplete.
+                toggleComplete(this.dataset.id, this);
+            });
+        });
+    });
+
+    /**
+     * Envía una petición POST al servidor para cambiar el estado de completado de una tarea.
+     * @param {string} tareaId - El ID de la tarea a actualizar.
+     * @param {HTMLInputElement} checkbox - El elemento checkbox que fue clickeado.
+     */
+    function toggleComplete(tareaId, checkbox) {
+        // Obtiene el token CSRF para una petición segura.
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        // Realiza la petición Fetch a la URL 'toggle-complete'.
+        fetch(`/toggle-complete/${tareaId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Actualiza la UI dinámicamente según la respuesta del servidor.
+            const row = document.getElementById(`tarea-${tareaId}`);
+            const link = row.querySelector('.task-title a');
+
+            if (data.completo) {
+                row.classList.add('completed');
+                link.classList.add('completed-text');
+            } else {
+                row.classList.remove('completed');
+                link.classList.remove('completed-text');
+            }
+        })
+        .catch(error => {
+            // En caso de error, revierte el cambio en el checkbox y muestra un error en la consola.
+            console.error('Error:', error);
+            checkbox.checked = !checkbox.checked;
+        });
+    }
+</script>
+
+<!-- 
+Token CSRF oculto
+Este token es necesario para que el script de JavaScript pueda realizar peticiones POST seguras.
+-->
+{% csrf_token %}
+
+{% endblock %}

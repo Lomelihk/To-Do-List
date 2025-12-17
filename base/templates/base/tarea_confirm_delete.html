@@ -1,0 +1,40 @@
+<!--
+Plantilla de Confirmación de Eliminación (`tarea_confirm_delete.html`)
+---
+Descripción: Muestra una página de confirmación antes de eliminar una tarea de forma permanente.
+Esto previene eliminaciones accidentales.
+-->
+{% extends 'base/principal.html' %} <!-- Hereda de la plantilla base. -->
+
+{% block content %}
+
+<!-- Cabecera con enlace para regresar a la lista de tareas si el usuario cancela. -->
+<div class="header-bar">
+    <a href="{% url 'lista_pendientes' %}">&#8592; Volver</a>
+</div>
+
+<!-- Tarjeta que contiene el mensaje de confirmación. -->
+<div class="card">
+    <h2 class="delete-title">¿Eliminar tarea?</h2>
+    <p>¿Estás seguro de que quieres eliminar la tarea "<strong>{{tarea}}</strong>"?</p>
+
+    <!-- 
+    Formulario de confirmación:
+    Al enviar este formulario (haciendo clic en "Eliminar"), se realiza una petición POST
+    a la vista `EliminarTarea`, que procesará la eliminación del objeto.
+    -->
+    <form method="POST" action="">
+        {% csrf_token %} <!-- Token de seguridad CSRF. -->
+        
+        <!-- Contenedor para los botones de acción. -->
+        <div class="form-actions">
+            <!-- El botón de tipo "submit" envía el formulario y confirma la eliminación. -->
+            <input type="submit" value="Eliminar" class="button button-danger">
+            
+            <!-- El enlace "Cancelar" simplemente redirige al usuario de vuelta a la lista de tareas. -->
+            <a href="{% url 'lista_pendientes' %}" class="button button-outline">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

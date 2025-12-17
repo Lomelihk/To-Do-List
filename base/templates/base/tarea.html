@@ -1,0 +1,42 @@
+<!--
+Plantilla de Detalle de Tarea (`tarea.html`)
+---
+Descripción: Muestra los detalles completos de una única tarea. Esta vista es más simple
+y actualmente no utiliza los estilos de "tarjeta" de las otras páginas.
+-->
+{% extends 'base/principal.html' %} <!-- Hereda de la plantilla base. -->
+
+{% block content %}
+
+<h1>Detalle de Tarea</h1>
+<a href="{% url 'lista_pendientes' %}">Volver a la Lista</a>
+
+<hr> <!-- Separador visual -->
+
+<h2>{{ tarea.titulo }}</h2>
+
+<!-- Muestra la descripción de la tarea. Si no hay descripción, muestra 'Sin descripción'. -->
+<p><strong>Descripción:</strong> {{ tarea.descripcion|default:"Sin descripción" }}</p>
+
+<!-- Muestra el estado de la tarea (Completada o Pendiente) basado en el booleano `completo`. -->
+<p><strong>Estado:</strong> 
+    {% if tarea.completo %}
+        Completada
+    {% else %}
+        Pendiente
+    {% endif %}
+</p>
+
+<!-- Muestra la fecha de creación, formateada. -->
+<p><strong>Fecha de creación:</strong> {{ tarea.creado|date:"d/m/Y H:i" }}</p>
+
+<!-- Muestra el usuario propietario de la tarea. -->
+<p><strong>Usuario:</strong> {{ tarea.usuario|default:"Sin asignar" }}</p>
+
+<hr>
+
+<!-- Enlace para ir a la página de edición de esta tarea específica. -->
+<div>
+    <a href="{% url 'editar_tarea' tarea.id %}" class="button">Editar Tarea</a>
+</div>
+{% endblock %}

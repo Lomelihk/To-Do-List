@@ -1,0 +1,39 @@
+<!--
+Plantilla de Formulario de Tarea (`tarea_form.html`)
+---
+Descripción: Esta plantilla se utiliza tanto para crear una nueva tarea como para editar una existente.
+Renderiza un formulario de Django (`TareaForm`) para que el usuario ingrese los datos de la tarea.
+-->
+{% extends 'base/principal.html' %} <!-- Hereda de la plantilla base. -->
+
+{% block content %}
+
+<!-- Cabecera con enlace para regresar a la lista de tareas. -->
+<div class="header-bar">
+    <a href="{% url 'lista_pendientes' %}">&#8592; Volver</a>
+</div>
+
+<!-- Tarjeta que contiene el formulario. -->
+<div class="card">
+    <h1>Tarea</h1> <!-- El título puede ser "Crear Tarea" o "Editar Tarea" dependiendo de la vista. -->
+    
+    <!-- 
+    Formulario para crear/editar la tarea.
+    - method="POST": Envía los datos del formulario.
+    - action="": El formulario se envía a la misma URL, que maneja tanto la creación como la edición.
+    -->
+    <form method="POST" action="">
+        {% csrf_token %} <!-- Token de seguridad CSRF. -->
+        
+        <!-- {{ form.as_p }}: Renderiza el formulario de tareas pasado desde la vista. -->
+        {{ form.as_p }}
+        
+        <!-- Contenedor para los botones de acción del formulario. -->
+        <div class="form-actions">
+            <input type="submit" value="Guardar">
+            <a href="{% url 'lista_pendientes' %}" class="button button-outline">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
