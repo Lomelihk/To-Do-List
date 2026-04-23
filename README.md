@@ -1,93 +1,98 @@
-# Aplicación de Lista de Tareas (To-Do List)
+# To-Do List
 
-Esta es una aplicación web simple pero funcional para gestionar una lista de tareas pendientes, construida con el framework Django.
+Aplicación web de gestión de tareas construida con Django 5.2. Permite a cada usuario registrado crear, editar, completar y eliminar sus propias tareas, con búsqueda en tiempo real.
 
 ## Características
 
--   **Autenticación de Usuarios:** Sistema completo de registro, inicio y cierre de sesión.
--   **Gestión de Tareas (CRUD):**
-    -   **Crear:** Añadir nuevas tareas a la lista.
-    -   **Leer:** Ver la lista completa de tareas y el detalle de cada una.
-    -   **Actualizar:** Editar el título y la descripción de las tareas existentes.
-    -   **Eliminar:** Borrar tareas de la lista.
--   **Interfaz de Administración:** El modelo de Tareas está integrado con el panel de administración de Django para una gestión sencilla.
--   **Seguridad (Pendiente):** La lógica para que cada usuario solo pueda ver y gestionar sus propias tareas está diseñada pero necesita ser implementada.
+- Autenticación completa: registro, inicio y cierre de sesión
+- CRUD de tareas: crear, ver, editar y eliminar
+- Filtrado por usuario: cada usuario solo ve sus propias tareas
+- Búsqueda por título en tiempo real
+- Contador de tareas pendientes en el panel principal
+- Panel de administración de Django integrado
 
-## Tecnologías Utilizadas
+## Tecnologías
 
--   **Backend:**
-    -   Python 3
-    -   Django 5.2
--   **Base de Datos:**
-    -   SQLite (para desarrollo)
--   **Frontend:**
-    -   HTML5
-    -   CSS (básico, sin framework)
+| Capa | Tecnología |
+|---|---|
+| Backend | Python 3 + Django 5.2 |
+| Base de datos | SQLite (desarrollo) |
+| Frontend | HTML5 + CSS personalizado |
 
-## Instalación y Puesta en Marcha
+## Instalación
 
-Sigue estos pasos para configurar y ejecutar el proyecto en tu máquina local.
-
-### 1. Prerrequisitos
-
--   Tener instalado Python 3.8 o superior.
--   Tener instalado `pip` (el gestor de paquetes de Python).
-
-### 2. Clonar el Repositorio
+### 1. Clonar el repositorio
 
 ```bash
-git clone <URL-del-repositorio>
+git clone git@github.com:Lomelihk/To-Do-List.git
 cd To-Do-List
 ```
 
-### 3. Crear y Activar un Entorno Virtual
-
-Es una buena práctica aislar las dependencias del proyecto en un entorno virtual.
-
--   **En macOS / Linux:**
-    ```bash
-    python3 -m venv venv
-    source venv/bin/activate
-    ```
--   **En Windows:**
-    ```bash
-    python -m venv venv
-    .\venv\Scripts\activate
-    ```
-
-### 4. Instalar Dependencias
-
-Instala todas las librerías necesarias que se encuentran en el archivo `requirements.txt`.
+### 2. Crear entorno virtual e instalar dependencias
 
 ```bash
+python3 -m venv venv
+source venv/bin/activate       # macOS / Linux
+# venv\Scripts\activate        # Windows
+
 pip install -r requirements.txt
 ```
 
-### 5. Aplicar las Migraciones
-
-Este comando creará la base de datos SQLite y las tablas necesarias para la aplicación.
+### 3. Aplicar migraciones
 
 ```bash
 python manage.py migrate
 ```
 
-### 6. Crear un Superusuario
-
-Para poder acceder al panel de administración de Django, necesitas crear una cuenta de administrador.
+### 4. Crear superusuario (opcional, para el panel admin)
 
 ```bash
 python manage.py createsuperuser
 ```
-Sigue las instrucciones en la terminal para elegir un nombre de usuario, correo electrónico y contraseña.
 
-## Cómo Ejecutar la Aplicación
-
-Una vez completada la instalación, inicia el servidor de desarrollo de Django.
+### 5. Iniciar el servidor
 
 ```bash
 python manage.py runserver
 ```
 
-La aplicación estará disponible en tu navegador en la siguiente dirección: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+Abre [http://127.0.0.1:8000](http://127.0.0.1:8000) en tu navegador.
 
--   Para acceder al panel de administración, ve a [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/) e inicia sesión con las credenciales del superusuario que creaste.
+## Estructura del proyecto
+
+```
+To-Do-List/
+├── base/
+│   ├── models.py       # Modelo Tarea (titulo, descripcion, completo, usuario)
+│   ├── views.py        # Vistas CRUD + autenticación
+│   ├── urls.py         # Rutas de la app
+│   ├── templates/      # Plantillas HTML
+│   └── migrations/
+├── proyecto/
+│   ├── settings.py
+│   └── urls.py
+├── static/css/
+│   └── style.css
+├── manage.py
+└── requirements.txt
+```
+
+## Modelo de datos
+
+```python
+class Tarea(models.Model):
+    usuario     = ForeignKey(User)
+    titulo      = CharField(max_length=200)
+    descripcion = TextField(null=True, blank=True)
+    completo    = BooleanField(default=False)
+    creado      = DateTimeField(auto_now_add=True)
+```
+
+## Dependencias
+
+```
+Django==5.2.6
+asgiref==3.9.2
+sqlparse==0.5.3
+tzdata==2025.2
+```
