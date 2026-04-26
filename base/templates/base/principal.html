@@ -6,13 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Diseño responsive -->
     <title>To-Do List</title>
     
-    <!-- Carga la fuente 'Nunito' de Google Fonts -->
+    <!-- Fuente Inter de Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Enlaza la hoja de estilos principal -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- Aplica el tema antes del render para evitar flash -->
+    <script>
+        if (localStorage.getItem('theme') === 'dark-mode') {
+            document.documentElement.classList.add('dark-mode-pre');
+        }
+    </script>
+    <style>
+        .dark-mode-pre { background: #0F0D17; }
+    </style>
 </head>
 <body>
     <button id="dark-mode-toggle" aria-label="Toggle dark mode"></button>
